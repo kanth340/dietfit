@@ -9,29 +9,41 @@ import React, {
   StyleSheet,
   Image,
   Text,
+  NativeModules,
   View
 } from 'react-native';
+import UserLogin from './app/screens/user-login';
+import MemberInfo from './app/screens/member-info';
+
 var MOCKED_MOVIES_DATA = [
   {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
 ];
 
 class grannysuggestions extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state= {
+      isAuthenticated:false,
+      fbdata:{}
+    }
+  }
+  
   render() {
-    var movie = MOCKED_MOVIES_DATA[0];
+    if(!this.state.isAuthenticated) {
+      return <UserLogin afterLogin={data => this.setState({isAuthenticated:true,fbdata:data})} />
+    }
+
     return (
-      <View style={styles.container}>
-        <Text>{movie.title}</Text>
-        <Text>{movie.year}</Text>
-        <Image source={{uri: movie.posters.thumbnail}} style={styles.thumbnail}/>
-      </View>
+        <MemberInfo fbdata ={this.state.fbdata} afterLogout={data => this.setState({isAuthenticated:false,fbdata:{}})}/>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
